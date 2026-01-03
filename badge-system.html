@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badge System - Spiritual Growth Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+        }
+
+        /* Badge Collection */
+        .badge-collection {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .badge-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge-item:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #4fc3f7;
+        }
+
+        .badge-item.earned {
+            background: rgba(76, 175, 80, 0.2);
+            border-color: #4caf50;
+        }
+
+        .badge-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .badge-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .badge-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .badge-requirements {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+            border-radius: 10px;
+            width: 65%;
+            transition: width 1s ease;
+        }
+
+        /* User Profile */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
+        }
+
+        .user-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4fc3f7;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Badge Colors */
+        .color-1 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .color-2 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .color-3 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .color-4 { background: linear-gradient(135deg, #f39c12, #d35400); }
+        .color-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .color-6 { background: linear-gradient(135deg, #1abc9c, #16a085); }
+        .color-7 { background: linear-gradient(135deg, #34495e, #2c3e50); }
+        .color-8 { background: linear-gradient(135deg, #e67e22, #d35400); }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #4fc3f7, #29b6f6);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Earned Badges */
+        .earned-badges {
+            margin-top: 50px;
+        }
+
+        .earned-list {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: thin;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .badge-collection {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .user-profile {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-medal"></i> Spiritual Growth Badges</h1>
+        <p class="subtitle">Earn badges as you progress through your spiritual journey. Collect them all!</p>
+        
+        <!-- User Profile -->
+        <div class="user-profile">
+            <div class="avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+                <h3 id="userName">Alex Johnson</h3>
+                <p>Level 3 Spiritual Explorer • 45 Days Streak</p>
+                <div class="user-stats">
+                    <div class="stat">
+                        <div class="stat-number" id="badgeCount">8</div>
+                        <div class="stat-label">Badges</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="completionRate">65%</div>
+                        <div class="stat-label">Completion</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="level">3</div>
+                        <div class="stat-label">Level</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <h3><i class="fas fa-chart-line"></i> Your Progress</h3>
+                <span id="progressText">8/12 Badges Earned</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p>Complete courses and daily practices to earn more badges!</p>
+        </div>
+        
+        <!-- Badge Collection -->
+        <h3><i class="fas fa-trophy"></i> Available Badges</h3>
+        <div class="badge-collection" id="badgeCollection">
+            <!-- Badges will be generated by JavaScript -->
+        </div>
+        
+        <!-- Earned Badges -->
+        <div class="earned-badges">
+            <h3><i class="fas fa-star"></i> Your Earned Badges</h3>
+            <div class="earned-list" id="earnedBadges">
+                <!-- Earned badges will appear here -->
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="shareAchievements()">
+                <i class="fas fa-share-alt"></i> Share Achievements
+            </button>
+            <button class="btn btn-secondary" onclick="viewLeaderboard()">
+                <i class="fas fa-trophy"></i> View Leaderboard
+            </button>
+            <button class="btn btn-secondary" onclick="downloadBadges()">
+                <i class="fas fa-download"></i> Download Badges
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Badge Data
+        const badges = [
+            {
+                id: 1,
+                name: "Prayer Master",
+                icon: "fas fa-hands-praying",
+                description: "Complete 30 days of consistent prayer",
+                colorClass: "color-1",
+                earned: true,
+                requirements: "30 prayer sessions"
+            },
+            {
+                id: 2,
+                name: "Scripture Scholar",
+                icon: "fas fa-book-bible",
+                description: "Read and reflect on 100 Bible verses",
+                colorClass: "color-2",
+                earned: true,
+                requirements: "100 verses"
+            },
+            {
+                id: 3,
+                name: "Meditation Guide",
+                icon: "fas fa-spa",
+                description: "Lead 10 guided meditation sessions",
+                colorClass: "color-3",
+                earned: false,
+                requirements: "10 sessions led"
+            },
+            {
+                id: 4,
+                name: "Gratitude Guru",
+                icon: "fas fa-heart",
+                description: "Maintain a 60-day gratitude journal",
+                colorClass: "color-4",
+                earned: true,
+                requirements: "60-day streak"
+            },
+            {
+                id: 5,
+                name: "Community Builder",
+                icon: "fas fa-users",
+                description: "Help 5 friends start their spiritual journey",
+                colorClass: "color-5",
+                earned: false,
+                requirements: "5 friends helped"
+            },
+            {
+                id: 6,
+                name: "Fast Complete",
+                icon: "fas fa-moon",
+                description: "Complete a 24-hour spiritual fast",
+                colorClass: "color-6",
+                earned: true,
+                requirements: "24-hour fast"
+            },
+            {
+                id: 7,
+                name: "Wisdom Keeper",
+                icon: "fas fa-lightbulb",
+                description: "Share 50 insights from your spiritual journey",
+                colorClass: "color-7",
+                earned: true,
+                requirements: "50 insights shared"
+            },
+            {
+                id: 8,
+                name: "Peace Ambassador",
+                icon: "fas fa-dove",
+                description: "Resolve 3 conflicts with spiritual principles",
+                colorClass: "color-8",
+                earned: false,
+                requirements: "3 conflicts resolved"
+            },
+            {
+                id: 9,
+                name: "Early Riser",
+                icon: "fas fa-sun",
+                description: "Pray at sunrise for 21 consecutive days",
+                colorClass: "color-1",
+                earned: true,
+                requirements: "21 sunrise prayers"
+            },
+            {
+                id: 10,
+                name: "Servant Leader",
+                icon: "fas fa-hand-holding-heart",
+                description: "Complete 20 hours of community service",
+                colorClass: "color-2",
+                earned: false,
+                requirements: "20 service hours"
+            },
+            {
+                id: 11,
+                name: "Forgiveness Master",
+                icon: "fas fa-handshake",
+                description: "Forgive 7 significant offenses",
+                colorClass: "color-3",
+                earned: true,
+                requirements: "7 offenses forgiven"
+            },
+            {
+                id: 12,
+                name: "Praise Champion",
+                icon: "fas fa-music",
+                description: "Lead worship for 15 sessions",
+                colorClass: "color-4",
+                earned: false,
+                requirements: "15 worship sessions"
+            }
+        ];
+
+        // Initialize the badge system
+        function initBadgeSystem() {
+            const badgeCollection = document.getElementById('badgeCollection');
+            const earnedBadges = document.getElementById('earnedBadges');
+            
+            let earnedCount = 0;
+            
+            // Generate all badges
+            badges.forEach(badge => {
+                const badgeElement = document.createElement('div');
+                badgeElement.className = `badge-item ${badge.earned ? 'earned' : ''}`;
+                badgeElement.innerHTML = `
+                    <div class="badge-icon ${badge.colorClass}">
+                        <i class="${badge.icon}"></i>
+                    </div>
+                    <div class="badge-name">${badge.name}</div>
+                    <div class="badge-desc">${badge.description}</div>
+                    <div class="badge-requirements">${badge.requirements}</div>
+                `;
+                
+                badgeElement.onclick = () => showBadgeDetails(badge);
+                badgeCollection.appendChild(badgeElement);
+                
+                // Add to earned badges if earned
+                if (badge.earned) {
+                    earnedCount++;
+                    const earnedElement = document.createElement('div');
+                    earnedElement.className = `badge-icon ${badge.colorClass}`;
+                    earnedElement.innerHTML = `<i class="${badge.icon}"></i>`;
+                    earnedElement.title = badge.name;
+                    earnedBadges.appendChild(earnedElement);
+                }
+            });
+            
+            // Update stats
+            document.getElementById('badgeCount').textContent = earnedCount;
+            document.getElementById('completionRate').textContent = Math.round((earnedCount / badges.length) * 100) + '%';
+            document.getElementById('progressText').textContent = `${earnedCount}/${badges.length} Badges Earned`;
+            document.getElementById('progressFill').style.width = `${(earnedCount / badges.length) * 100}%`;
+            
+            // Calculate level based on badges
+            const level = Math.floor(earnedCount / 3) + 1;
+            document.getElementById('level').textContent = level;
+        }
+
+        // Show badge details
+        function showBadgeDetails(badge) {
+            const message = badge.earned 
+                ? `🎉 You've earned the "${badge.name}" badge!\n${badge.description}`
+                : `🔒 Locked: "${badge.name}"\n${badge.description}\n\nRequirements: ${badge.requirements}`;
+            
+            alert(message);
+        }
+
+        // Share achievements
+        function shareAchievements() {
+            const earnedCount = document.getElementById('badgeCount').textContent;
+            const level = document.getElementById('level').textContent;
+            const completionRate = document.getElementById('completionRate').textContent;
+            
+            const shareText = `🏆 I'm Level ${level} in Spiritual Growth Academy with ${earnedCount} badges earned! ${completionRate} completion rate. Join me on this journey!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Spiritual Growth Achievements',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                alert('Achievements copied to clipboard! Share it on social media.');
+            }
+        }
+
+        // View leaderboard
+        function viewLeaderboard() {
+            alert('Leaderboard Feature\n\nIn the full app, this would show:\n1. Top 10 users by badges\n2. Weekly champions\n3. Community challenges\n4. Your ranking\n\nComing soon!');
+        }
+
+        // Download badges
+        function downloadBadges() {
+            alert('Download Feature\n\nIn the full app, this would:\n1. Generate PNG images of your badges\n2. Create a badge collection PDF\n3. Allow sharing on social media\n\nComing soon!');
+        }
+
+        // Change username
+        function changeUsername() {
+            const newName = prompt('Enter your name:', document.getElementById('userName').textContent);
+            if (newName) {
+                document.getElementById('userName').textContent = newName;
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initBadgeSystem);
+        
+        // Make username clickable
+        document.getElementById('userName').onclick = changeUsername;
+    </script>
+</body>
+</html>

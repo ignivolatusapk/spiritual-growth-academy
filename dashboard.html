@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spiritual Growth Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(90deg, #1a237e, #283593);
+            color: white;
+            padding: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .welcome-message h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .quick-stats {
+            display: flex;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4fc3f7;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e8eaf6;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #1a237e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: #5c6bc0;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Progress Section */
+        .progress-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #5c6bc0;
+        }
+
+        .progress-info h4 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .progress-bar-small {
+            width: 200px;
+            height: 10px;
+            background: #e8eaf6;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill-small {
+            height: 100%;
+            background: linear-gradient(90deg, #5c6bc0, #42a5f5);
+            border-radius: 5px;
+        }
+
+        /* Badge Showcase */
+        .badge-showcase {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 20px 0;
+            scrollbar-width: thin;
+        }
+
+        .badge-item {
+            min-width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+        }
+
+        .badge-item.new::after {
+            content: 'NEW';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* AI Assistant */
+        .ai-assistant {
+            background: linear-gradient(135deg, #1a237e, #283593);
+            color: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .ai-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            box-shadow: 0 15px 30px rgba(33, 150, 243, 0.4);
+        }
+
+        .ai-message h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .ai-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ai-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .ai-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            background: #e8eaf6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5c6bc0;
+        }
+
+        .activity-details h4 {
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Footer */
+        .dashboard-footer {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-top: 1px solid #e8eaf6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #5c6bc0;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #1a237e;
+        }
+
+        /* Badge Colors */
+        .badge-color-1 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .badge-color-2 { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .badge-color-3 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .badge-color-4 { background: linear-gradient(135deg, #f39c12, #d35400); }
+        .badge-color-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="user-info">
+                <div class="avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="welcome-message">
+                    <h2>Welcome back, <span id="userName" style="color: #4fc3f7;">Alex</span>! 👋</h2>
+                    <p>Your spiritual growth journey continues...</p>
+                </div>
+            </div>
+            <div class="quick-stats">
+                <div class="stat">
+                    <div class="stat-number" id="currentStreak">45</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="badgesCount">12</div>
+                    <div class="stat-label">Badges</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="coursesComplete">5</div>
+                    <div class="stat-label">Courses</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="level">7</div>
+                    <div class="stat-label">Level</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="dashboard-content">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Progress Overview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-chart-line"></i> Progress Overview</h3>
+                        <select id="timeRange" style="padding: 8px 15px; border-radius: 10px; border: 1px solid #ddd;">
+                            <option>Last 7 days</option>
+                            <option selected>Last 30 days</option>
+                            <option>Last 90 days</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="progressChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Current Courses -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-book-open"></i> Current Courses</h3>
+                        <button onclick="viewAllCourses()" style="background: #5c6bc0; color: white; border: none; padding: 8px 20px; border-radius: 10px; cursor: pointer;">
+                            View All
+                        </button>
+                    </div>
+                    <div class="progress-list">
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <h4>Prayer Mastery Certification</h4>
+                                <p>Day 5 of 7 • 71% complete</p>
+                            </div>
+                            <div class="progress-bar-small">
+                                <div class="progress-fill-small" style="width: 71%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <h4>Biblical Studies Certificate</h4>
+                                <p>Week 2 of 4 • 50% complete</p>
+                            </div>
+                            <div class="progress-bar-small">
+                                <div class="progress-fill-small" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-info">
+                                <h4>Meditation Fundamentals</h4>
+                                <p>Day 2 of 5 • 40% complete</p>
+                            </div>
+                            <div class="progress-bar-small">
+                                <div class="progress-fill-small" style="width: 40%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Recent Badges -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-medal"></i> Recent Badges</h3>
+                        <span id="badgeCountText">12 total</span>
+                    </div>
+                    <div class="badge-showcase">
+                        <div class="badge-item badge-color-1 new">
+                            <i class="fas fa-hands-praying"></i>
+                        </div>
+                        <div class="badge-item badge-color-2">
+                            <i class="fas fa-book-bible"></i>
+                        </div>
+                        <div class="badge-item badge-color-3">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="badge-item badge-color-4 new">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <div class="badge-item badge-color-5">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="badge-item badge-color-1">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="badge-item badge-color-2">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-history"></i> Recent Activity</h3>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-pray"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Completed morning prayer</h4>
+                                <p class="activity-time">Today, 7:30 AM • 15 minutes</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Finished Psalm 23 meditation</h4>
+                                <p class="activity-time">Yesterday • Earned "Scripture Scholar" badge</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Joined prayer group session</h4>
+                                <p class="activity-time">2 days ago • 45 minutes</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Reached Level 7</h4>
+                                <p class="activity-time">3 days ago • +500 XP</p>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Helped a friend start their journey</h4>
+                                <p class="activity-time">4 days ago • Community Builder progress</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Assistant -->
+        <div class="ai-assistant">
+            <div class="ai-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="ai-message">
+                <h3>Your AI Spiritual Guide</h3>
+                <p>I notice you've been consistent with morning prayers! Want to deepen your practice today?</p>
+                <div class="ai-actions">
+                    <button class="ai-btn" onclick="askAITeacher('How can I improve my meditation?')">
+                        <i class="fas fa-question-circle"></i> Ask a Question
+                    </button>
+                    <button class="ai-btn" onclick="getDailyChallenge()">
+                        <i class="fas fa-bolt"></i> Daily Challenge
+                    </button>
+                    <button class="ai-btn" onclick="reviewProgress()">
+                        <i class="fas fa-chart-bar"></i> Progress Review
+                    </button>
+                    <button class="ai-btn" onclick="suggestCourse()">
+                        <i class="fas fa-graduation-cap"></i> Course Suggestion
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-logo">
+                <h3><i class="fas fa-graduation-cap"></i> Spiritual Growth Academy</h3>
+                <p>Transforming lives through spiritual education</p>
+            </div>
+            <div class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="#"><i class="fas fa-book"></i> Courses</a>
+                <a href="#"><i class="fas fa-medal"></i> Badges</a>
+                <a href="#"><i class="fas fa-chart-bar"></i> Analytics</a>
+                <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Initialize Charts
+        function initCharts() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            
+            // Progress Chart
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Prayer Minutes',
+                        data: [45, 52, 60, 75],
+                        borderColor: '#5c6bc0',
+                        backgroundColor: 'rgba(92, 107, 192, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Meditation Minutes',
+                        data: [30, 40, 50, 65],
+                        borderColor: '#42a5f5',
+                        backgroundColor: 'rgba(66, 165, 245, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Weekly Spiritual Practice'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Minutes'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // AI Teacher Functions
+        function askAITeacher(question) {
+            const questions = [
+                "How can I improve my prayer life?",
+                "What Bible verse should I read today?",
+                "How do I handle spiritual dryness?",
+                "Suggest a 5-minute meditation",
+                "How to forgive someone who hurt me?"
+            ];
+            
+            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+            const userQuestion = prompt("Ask your AI teacher:", randomQuestion);
+            
+            if (userQuestion) {
+                const responses = [
+                    `Based on your progress, I recommend: Focus on gratitude prayers for 5 minutes daily. This aligns with your current "Prayer Mastery" course.`,
+                    `Great question! For "${userQuestion}", try this: Start with deep breathing, then reflect on one thing you're thankful for.`,
+                    `I notice you've been consistent with morning practice. To deepen: Add 2 minutes of silence after your prayers.`,
+                    `Perfect timing! Since you're on Day 5 of Prayer Mastery, focus on listening in prayer today.`
+                ];
+                
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                
+                alert(`🤖 AI Teacher Response:\n\n${response}\n\n---\n\nThis is a simulation. In the full app, this connects to DeepSeek AI for personalized guidance.`);
+            }
+        }
+
+        function getDailyChallenge() {
+            const challenges = [
+                "Express gratitude to 3 people today",
+                "5 minutes of silent meditation after lunch",
+                "Read and reflect on Psalm 23",
+                "Pray for someone you find difficult to love",
+                "Fast from social media for 3 hours"
+            ];
+            
+            const challenge = challenges[Math.floor(Math.random() * challenges.length)];
+            alert(`🎯 Today's Spiritual Challenge:\n\n"${challenge}"\n\nComplete it to earn +50 XP and progress toward your next badge!`);
+        }
+
+        function reviewProgress() {
+            alert(`📊 Your Progress Review:\n\n✅ Strengths:\n• Consistent morning prayer (45-day streak!)\n• Active in community\n• Quick badge earner\n\n📈 Areas to Grow:\n• Evening meditation consistency\n• Scripture memorization\n• Service hours\n\n💡 Suggestion: Try 10 minutes of evening reflection this week.`);
+        }
+
+        function suggestCourse() {
+            alert(`🎓 Course Suggestion:\n\nBased on your progress in "Prayer Mastery", I recommend:\n\n"Meditation & Mindfulness Certificate"\n• Builds on your prayer foundation\n• 14-day course\n• Earns "Mindfulness Master" badge\n• 85% match with your interests\n\nStart anytime!`);
+        }
+
+        function viewAllCourses() {
+            alert('Course Catalog:\n\n1. Prayer Mastery (71% complete)\n2. Biblical Studies (50% complete)\n3. Meditation Fundamentals (40% complete)\n4. Spiritual Leadership (Coming Soon)\n5. Forgiveness & Healing (Coming Soon)\n\nIn the full app, this opens the course catalog.');
+        }
+
+        // Change username
+        document.getElementById('userName').onclick = function() {
+            const newName = prompt('Enter your name:', this.textContent);
+            if (newName) {
+                this.textContent = newName;
+            }
+        };
+
+        // Time range selector
+        document.getElementById('timeRange').onchange = function() {
+            alert(`Time range changed to: ${this.value}\n\nIn the full app, this would update all charts and progress data.`);
+        };
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            
+            // Update stats every 10 seconds (simulation)
+            setInterval(() => {
+                const streak = document.getElementById('currentStreak');
+                const current = parseInt(streak.textContent);
+                streak.textContent = current + (Math.random() > 0.7 ? 1 : 0);
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
